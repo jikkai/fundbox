@@ -1,0 +1,11 @@
+{
+  "presets": ["@babel/preset-env"],
+  "plugins": [
+    "@babel/plugin-transform-react-jsx",
+    "@babel/plugin-proposal-object-rest-spread",
+    ["import", {
+      "libraryName": "antd",
+      "style": "css"
+    }]
+  ]
+}
