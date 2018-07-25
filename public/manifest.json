@@ -11,10 +11,11 @@
   },
   "permissions": [
     "storage",
-    "*://*.github.com/*"
+    "*://*.1234567.com.cn/*"
   ],
   "browser_action": {
     "default_title": "fundbox",
     "default_popup": "popup.html"
-  }
+  },
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://fundgz.1234567.com.cn; object-src 'self'"
 }

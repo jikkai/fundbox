@@ -16,9 +16,11 @@
   "author": "Jikkai Xiao <sonne@asaki.me>",
   "license": "Apache-2.0",
   "dependencies": {
+    "@babel/polyfill": "^7.0.0-beta.54",
     "antd": "^3.7.1",
     "react": "^16.4.1",
-    "react-dom": "^16.4.1"
+    "react-dom": "^16.4.1",
+    "reqwest": "^2.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.54",

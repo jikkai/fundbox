@@ -1,62 +1,40 @@
 import React from 'react'
-import { LocaleProvider, Table, Divider, Icon } from 'antd'
+import { LocaleProvider } from 'antd'
 import zhCN from 'antd/lib/locale-provider/zh_CN'
-
-
-const columns = [{
-    title: '基金代码',
-    dataIndex: 'code',
-    key: 'code'
-  },
-  {
-    title: '成本价',
-    dataIndex: 'cost',
-    key: 'cost'
-  },
-  {
-    title: '持有份额',
-    dataIndex: 'share',
-    key: 'share'
-  },
-  {
-    title: '最新价格',
-    dataIndex: 'price',
-    key: 'price'
-  },
-  {
-    title: '盈亏估算',
-    dataIndex: 'appraisal',
-    key: 'appraisal'
-  },
-  {
-    title: '操作',
-    key: 'action',
-    render: (text, record) => (
-      <span>
-        修改
-        <Divider type="vertical" />
-        删除
-      </span>
-    )
-  }
-]
-
-const data = [
-  {
-    key: 0,
-    code: '',
-    cost: '',
-    share: '',
-    price: '',
-    appraisal: ''
-  }
-]
+import FundTable from './components/table'
+import { getFundByCode } from '../utils/http'
+import storage from '../utils/storage'
 
 export default class App extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      fund: []
+    }
+  }
+
+  async componentDidMount () {
+    const storageFund = await storage.get('fund')
+    const originFund = storageFund.length ? storageFund : []
+
+    const fund = await Promise.all(
+      originFund.map(async fund => {
+        const remoteFund = await getFundByCode(fund.code)
+        const { share, cost } = fund
+        fund.appraisal = (share * parseFloat(remoteFund.gsz) - cost * share).toFixed(2)
+        return fund
+      })
+    )
+
+    this.setState({
+      fund
+    })
+  }
+
   render() {
     return (
       <LocaleProvider locale={zhCN}>
-        <Table columns={columns} dataSource={data} />
+        <FundTable dataSource={this.state.fund} />
       </LocaleProvider>
     )
   }

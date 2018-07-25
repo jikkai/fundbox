@@ -6,7 +6,7 @@ const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 module.exports = {
   mode: 'production',
   entry: {
-    app: './src/app/index.jsx'
+    app: ['@babel/polyfill', './src/app/index.jsx']
   },
   output: {
     path: path.join(__dirname, './lib'),
