@@ -1,31 +1,21 @@
 import React from 'react'
 import { Button, Input, Col } from 'antd'
-import FundTable from './components/table'
+import FundTable from './components/fund-table'
+import AddPanel from './components/add-panel'
 import { getFundByCode } from '../utils/http'
 import storage from '../utils/storage'
-
-const record = {
-  key: '',
-  code: '',
-  name: '',
-  cost: '',
-  share: '',
-  price: '',
-  appraisal: ''
-}
 
 export default class App extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      fund: [],
-      record
+      fund: []
     }
   }
 
   async componentDidMount () {
     const storageFund = await storage.get('fund')
-    const originFund = storageFund.length ? storageFund : []
+    const originFund = storageFund.fund.length ? storageFund.fund : []
 
     const fund = await this.freshFund(originFund)
 
@@ -42,73 +32,70 @@ export default class App extends React.Component {
         fund.appraisal = (share * parseFloat(remoteFund.gsz) - cost * share).toFixed(2)
         fund.price = remoteFund.gsz
         fund.name = remoteFund.name
+        fund.updateTime = remoteFund.gztime
+        fund.date = remoteFund.jzrq
         return fund
       })
     )
   }
 
-  handleChange (key, event) {
-    const { value } = event.target
-    this.setState({
-      record: {
-        ...this.state.record,
-        [key]: value,
-        key: key === 'code' ? value : this.state.record.key
-      }
-    })
-  }
+  async addFund (record) {
+    const { code } = record
 
-  async addFund () {
-    if (this.state.record.code && !this.state.fund.find(fund => this.state.record.code === fund.code)) {
+    if (code && !this.state.fund.find(item => code === item.code)) {
       const fund = await this.freshFund(
-        [this.state.record].concat(this.state.fund)
+        [record].concat(this.state.fund)
       )
+
+      await storage.set('fund', fund)
 
       this.setState({
         fund
       })
-      this.setState({
-        record
-      })
     }
   }
 
-  updateFund() {
-    console.log(this.state.record)
+  async updateFund (editedRecord) {
+    const fund = await this.freshFund(
+      this.state.fund.map(item => {
+        if (item.code === editedRecord.code) {
+          item = { ...item, ...editedRecord }
+        }
+        return item
+      })
+    )
+
+    await storage.set('fund', fund)
+
+    this.setState({
+      fund
+    })
   }
 
-  render() {
+  async removeFundByCode (code) {
+    const fund = await this.freshFund(
+      this.state.fund.filter(fund => fund.code !== code)
+    )
+    await storage.set('fund', fund)
+    this.setState({
+      fund 
+    })
+  }
+
+  render () {
     return (
       <main>
-        <section>
-          <Input.Group>
-            <Col span={4}>
-              <Input
-                placeholder="基金代码"
-                value={this.state.record.code}
-                onChange={event => this.handleChange.bind(this, 'code', event)()}
-              />
-            </Col>
-            <Col span={4}>
-              <Input
-                placeholder="成本价"
-                value={this.state.record.cost}
-                onChange={event => this.handleChange.bind(this, 'cost', event)()}
-              />
-            </Col>
-            <Col span={4}>
-              <Input
-                placeholder="持有份额"
-                value={this.state.record.share}
-                onChange={event => this.handleChange.bind(this, 'share', event)()}
-              />
-            </Col>
-            <Col span={4}>
-              <Button type="primary" onClick={this.addFund.bind(this)} style={{ marginBottom: 16 }}>新增</Button>
-            </Col>
-          </Input.Group>
-        </section>
-        <FundTable dataSource={this.state.fund} updateFund={this.updateFund.bind(this)} />
+        <AddPanel
+          fund={this.state.fund}
+          addFund={this.addFund.bind(this)}
+          freshFund={this.freshFund.bind(this)}
+        />
+
+        <FundTable
+          fund={this.state.fund}
+          updateFund={this.updateFund.bind(this)}
+          removeFundByCode={this.removeFundByCode.bind(this)}
+        />
       </main>
     )
   }
