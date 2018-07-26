@@ -1,6 +1,12 @@
 import React from 'react'
-
-import { Table, Divider, Popconfirm, InputNumber, Tooltip } from 'antd'
+import {
+  Table,
+  Divider,
+  Popconfirm,
+  InputNumber,
+  Tooltip,
+  Popover
+} from 'antd'
 
 export default class FundTable extends React.Component {
   constructor(props) {
@@ -17,13 +23,20 @@ export default class FundTable extends React.Component {
           dataIndex: 'name',
           key: 'name',
           width: 160,
-          render: (text, record) => (
-            <div>
-              <span>{text}</span>
-              <br />
-              <span style={{ fontSize: '12px' }}>{record.code}</span>
-            </div>
-          )
+          render: (text, record) => {
+            return (
+              <Popover
+                placement="left"
+                content={<div data-fund={record.code} style={{ width: '100%', height: '40px' }} />}
+                onVisibleChange={visible => visible && this.props.onVisibleChange(record.code)}
+                title="十日内趋势"
+              >
+                <span>{text}</span>
+                <br />
+                <span style={{ fontSize: '12px' }}>{record.code}</span>
+              </Popover>
+            )
+          }
         },
         {
           title: '成本价',
@@ -161,7 +174,12 @@ export default class FundTable extends React.Component {
           pagination={false}
         />
         <Divider orientation="right">总盈亏</Divider>
-        <p style={{ textAlign: 'right' }}>{total.toFixed(2)}¥</p>
+        <p style={{
+          textAlign: 'right',
+          color: total > 0 ? '#f5222d' : total < 0 ? '#52c41a' : ''
+        }}>
+          ¥ {total.toFixed(2)}
+        </p>
       </section>
     )
   }
