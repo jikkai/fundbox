@@ -104,7 +104,7 @@ export default class FundTable extends React.Component {
                 cancelText="取消"
                 onConfirm={() => this.props.removeFundByCode(record.code)}
               >
-                <a>删除</a>
+                <a style={{ color: '#ff4d4f' }}>删除</a>
               </Popconfirm>
             </span>
           )
@@ -146,13 +146,23 @@ export default class FundTable extends React.Component {
   }
 
   render () {
+    const total = this.props.fund
+      .map(item => {
+        return item.appraisal
+      })
+      .reduce((a, b) => Number(a) + Number(b), 0)
+
     return (
-      <Table
-        size="middle"
-        columns={this.state.columns}
-        dataSource={this.props.fund}
-        pagination={false}
-      />
+      <section>
+        <Table
+          size="middle"
+          columns={this.state.columns}
+          dataSource={this.props.fund}
+          pagination={false}
+        />
+        <Divider orientation="right">总盈亏</Divider>
+        <p style={{ textAlign: 'right' }}>{total.toFixed(2)}¥</p>
+      </section>
     )
   }
 }

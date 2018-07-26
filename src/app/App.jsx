@@ -1,5 +1,4 @@
 import React from 'react'
-import { Button, Input, Col } from 'antd'
 import FundTable from './components/fund-table'
 import AddPanel from './components/add-panel'
 import { getFundByCode } from '../utils/http'
@@ -15,7 +14,7 @@ export default class App extends React.Component {
 
   async componentDidMount () {
     const storageFund = await storage.get('fund')
-    const originFund = storageFund.fund.length ? storageFund.fund : []
+    const originFund = storageFund.fund && storageFund.fund.length ? storageFund.fund : []
 
     const fund = await this.freshFund(originFund)
 
