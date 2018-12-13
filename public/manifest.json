@@ -1,6 +1,6 @@
 {
   "name": "Fundbox",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "minimum_chrome_version": "37",
   "manifest_version": 2,
   "description": "A fund management Chrome extension.",
