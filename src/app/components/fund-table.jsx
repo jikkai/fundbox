@@ -92,10 +92,10 @@ export default class FundTable extends React.Component {
           title: '盈亏估算',
           dataIndex: 'appraisal',
           key: 'appraisal',
-          width: 110,
+          width: 170,
           sorter: (a, b) => a.appraisal - b.appraisal,
           render: (text, record) => {
-            const ratio = ((record.price - record.cost) / record.price * 100).toFixed(2)
+            const ratio = ((record.cost - record.price) / record.cost * 100).toFixed(2)
             return (
               <span>
                 {text}
