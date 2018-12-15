@@ -8,10 +8,5 @@ export default {
     return chrome.storage.sync.set({
       [key]: value
     })
-    return new Promise(resolve => {
-      chrome.storage.sync.set({
-        [key]: value
-      }, result => resolve(result))
-    })
   }
 }

@@ -1,16 +1,12 @@
 import React from 'react'
-import echarts from 'echarts'
 import FundTable from './components/fund-table'
 import AddPanel from './components/add-panel'
-import { getFundByCode, getFundDailyGainByCode } from '../utils/http'
+import { getFundByCode } from '../utils/http'
 import storage from '../utils/storage'
 
 export default class App extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      fund: []
-    }
+  state = {
+    fund: []
   }
 
   async componentDidMount () {
@@ -70,35 +66,6 @@ export default class App extends React.Component {
     )
   }
 
-  async onVisibleChange (code) {
-    const $container = document.querySelector(`[data-fund="${code}"]`)
-    if ($container) {
-      const fundDeatil = await getFundDailyGainByCode(code)
-
-      const chart = echarts.init($container)
-
-      chart.setOption({
-        xAxis: {
-          type: 'category',
-          show: false,
-          boundaryGap: false,
-          data: fundDeatil.map(item => item.dataDate)
-        },
-        yAxis: {
-          type: 'value',
-          show: false,
-          min: value => value.min - 0.1,
-          max: value => value.max + 0.1
-        },
-        series: [{
-          data: fundDeatil.map(item => item.dailyGain),
-          type: 'line',
-          smooth: true
-        }]
-      })
-    }
-  }
-
   render () {
     return (
       <main>
@@ -112,7 +79,6 @@ export default class App extends React.Component {
           fund={this.state.fund}
           updateFund={this.updateFund.bind(this)}
           removeFundByCode={this.removeFundByCode.bind(this)}
-          onVisibleChange={this.onVisibleChange.bind(this)}
         />
       </main>
     )
