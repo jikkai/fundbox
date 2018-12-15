@@ -31,6 +31,7 @@ export default class App extends React.Component {
         item.name = remoteFund.name
         item.updateTime = remoteFund.gztime
         item.date = remoteFund.jzrq
+        item.ratio = ((cost - remoteFund.gsz) / cost * -100).toFixed(2)
         return item
       })
     )

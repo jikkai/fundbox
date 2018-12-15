@@ -22,7 +22,7 @@ export default class FundTable extends React.Component {
           title: '基金名称',
           dataIndex: 'name',
           key: 'name',
-          width: 160,
+          width: 140,
           render: (text, record) => {
             return (
               <Popover
@@ -31,8 +31,17 @@ export default class FundTable extends React.Component {
                 onVisibleChange={visible => visible && this.props.onVisibleChange(record.code)}
                 title="十日内趋势"
               >
-                <span>{text}</span>
-                <br />
+                <span
+                  style={{
+                    maxWidth: 140,
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    display: 'block',
+                    overflow: 'hidden'
+                  }}
+                >
+                  {text}
+                </span>
                 <span style={{ fontSize: '12px' }}>{record.code}</span>
               </Popover>
             )
@@ -42,7 +51,7 @@ export default class FundTable extends React.Component {
           title: '成本价',
           dataIndex: 'cost',
           key: 'cost',
-          width: 125,
+          width: 110,
           sorter: (a, b) => a.cost - b.cost,
           render: (text, record) => (
             <span>
@@ -92,14 +101,34 @@ export default class FundTable extends React.Component {
           title: '盈亏估算',
           dataIndex: 'appraisal',
           key: 'appraisal',
-          width: 170,
+          width: 110,
           sorter: (a, b) => a.appraisal - b.appraisal,
           render: (text, record) => {
-            const ratio = ((record.cost - record.price) / record.cost * 100).toFixed(2)
             return (
-              <span>
+              <span
+                style={{
+                  color: record.ratio > 0 ? '#f5222d' : record.ratio < 0 ? '#52c41a' : ''
+                }}
+              >
                 {text}
-                ({ratio}%)
+              </span>
+            )
+          }
+        },
+        {
+          title: '盈亏率',
+          dataIndex: 'ratio',
+          key: 'ratio',
+          width: 110,
+          sorter: (a, b) => a.ratio - b.ratio,
+          render: text => {
+            return (
+              <span
+                style={{
+                  color: text > 0 ? '#f5222d' : text < 0 ? '#52c41a' : ''
+                }}
+              >
+                {text}%
               </span>
             )
           }
@@ -107,6 +136,7 @@ export default class FundTable extends React.Component {
         {
           title: '操作',
           key: 'action',
+          width: 110,
           render: (text, record) => (
             <span>
               {
@@ -175,21 +205,24 @@ export default class FundTable extends React.Component {
       .reduce((a, b) => Number(a) + Number(b), 0)
 
     return (
-      <section>
+      <React.Fragment>
         <Table
           size="middle"
           columns={this.state.columns}
           dataSource={this.props.fund}
           pagination={false}
         />
-        <Divider orientation="right">总盈亏</Divider>
-        <p style={{
-          textAlign: 'right',
-          color: total > 0 ? '#f5222d' : total < 0 ? '#52c41a' : ''
-        }}>
-          ¥ {total.toFixed(2)}
-        </p>
-      </section>
+        
+        <section>
+          <Divider orientation="right">总盈亏</Divider>
+          <p style={{
+            textAlign: 'right',
+            color: total > 0 ? '#f5222d' : total < 0 ? '#52c41a' : ''
+          }}>
+            ¥ {total.toFixed(2)}
+          </p>
+        </section>
+      </React.Fragment>
     )
   }
 }
