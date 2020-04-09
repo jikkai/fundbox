@@ -1,6 +1,6 @@
 {
   "name": "Fundbox",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "minimum_chrome_version": "37",
   "manifest_version": 2,
   "description": "A fund management Chrome extension.",
@@ -11,12 +11,11 @@
   },
   "permissions": [
     "storage",
-    "*://*.1234567.com.cn/*",
-    "*://*.163.com/*"
+    "*://*.1234567.com.cn/*"
   ],
   "browser_action": {
     "default_title": "fundbox",
     "default_popup": "popup.html"
   },
-  "content_security_policy": "script-src 'self' 'unsafe-eval' https://fundgz.1234567.com.cn https://8.163.com; object-src 'self'"
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://fundgz.1234567.com.cn; object-src 'self'"
 }
